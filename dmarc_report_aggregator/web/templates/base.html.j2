@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+{%- macro passfail_color(result) -%}
+    {%- if result == "pass" -%}
+        success
+    {%- elif result == "fail" or result and "error" in result -%}
+        danger
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro alignment_name(alignment) -%}
+    {%- if alignment == "r" -%}
+        Relaxed
+    {%- elif alignment == "s" -%}
+        Strict
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro format_policy(policy) -%}
+    {% if policy.adkim %} adkim={{ policy.adkim }}; {% endif %}
+    {% if policy.aspf %} aspf={{ policy.aspf }}; {% endif %}
+    p={{ policy.p }};
+    {% if policy.sp %} sp={{ policy.sp }}; {% endif %}
+    {% if policy.pct %} pct={{ policy.pct }}; {% endif %}
+{% endmacro %}
+
+<html lang="en">
+<head>
+    {% block head %}
+        <title>{%- block title -%} DMARC Reports {%- endblock -%}</title>
+        <link rel="icon" href="https://docs.freitagsrunde.org/favicon.ico">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+              crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+                crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    {% endblock %}
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="https://docs.freitagsrunde.org/Logos/filled-logo-orange.png" alt="Logo"
+                     width="auto" height="32"
+                     class="d-inline-block align-text-top">
+                DMARC Reports
+            </a>
+        </div>
+    </nav>
+</header>
+<div class="container-fluid mt-2">
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        {% if request_ms %}
+            <small class="fw-light">
+                Processing took {{ request_ms }}ms.
+            </small>
+        {% endif %}
+        {% if db_size %}
+            <small class="fw-light">
+                Database is {{ db_size | filesizeformat(binary=True) }} in size.
+            </small>
+        {% endif %}
+        {% if "user_dn" in request %}
+            <br>
+            <small class="fw-light">
+                You are authenticated as {{ request["user_dn"] }}.
+                <a href="/logout">Log out.</a>
+            </small>
+        {% endif %}
+    </footer>
+</div>
+</body>
+</html>

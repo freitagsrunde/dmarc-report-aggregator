@@ -1,0 +1,36 @@
+Envelope-to: postmaster@freitagsrunde.org
+Content-Type: multipart/mixed; boundary="===============5448906968183539301=="
+MIME-Version: 1.0
+Subject: Report Domain: freitagsrunde.org; Submitter: Mail.Ru; Report-ID: 11477007044645350291690675200
+From: dmarc_support@corp.mail.ru
+To: postmaster@freitagsrunde.org
+Message-ID: <dmarc-1690793479@corp.mail.ru>
+Date: Mon, 31 Jul 2023 11:51:19 +0300
+Auto-Submitted: auto-generated
+
+--===============5448906968183539301==
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+VGhpcyBpcyBhbiBhZ2dyZWdhdGUgcmVwb3J0IGZyb20gTWFpbC5SdS4=
+
+--===============5448906968183539301==
+Content-Type: application/gzip
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="mail.ru!freitagsrunde.org!1690675200!1690761600.xml.gz"
+
+H4sICAd2x2QC/21haWwucnUhZnJlaXRhZ3NydW5kZS5vcmchMTY5MDY3NTIwMCExNjkwNzYxNjAw
+LnhtbACNVMty2zAM/JXcfLIoya+kwzD9gV76AxqahCROJILlw03+vqBk+VF3OrmYxBJY7IKU+dvH
+ODydwAeD9nVVFeXqCaxCbWz3ukqxXT+v3gRvAfRRqnfBPTj0sRkhSi2jFBx911g5gvghzVD8TJxd
+EA4jYUKP0qsmJJcrvyv0rsh44Sl3zuDwEb1sFNooVWyMbVH0MbpvjPUwXNJZXtcZocLHikWb0aKq
+todDWR7K7Xa/3W12Zf1S7V/K/WFXlyVn10ROJqDx0nYk9widseI2cUY4WD3Bh321z3COObstZQ9z
+cTgY9dm4dBxM6CG3QtJvRevBRNkFn6yGgoZFTPMJl/rdjMJzNm+4DK6dwrxyJ34lSf2iscCZEzzc
+IxRyp6KoSGFe6fdBgweaf17xN9Vj8goa48Tzpqjrsqg3L0VVU/n1hCtMljg5mzeLLzjJIdEAsi8T
+HAYT6QUJi1nJLcInKy3dHOGTq2xmjidb7JGRTfKMBnLWGnqcgvcgNfim9Tj+a4K3x5zdVcoU+8ZD
+SEMMZzXLVZBKKwFdgbZD7AYoFBZGXy8kwAAqohfLplovNWu0o1EeA7ZxrXAkN0syn7udTZ6Dxf2d
+AJqW9uaU+47/6/pV8mmgZ5pP2SP+RazQgRjzlIhxChY6C4k+qFvG+XLup8eW98Mu/wh/AIcriz5C
+BAAA
+
+--===============5448906968183539301==--

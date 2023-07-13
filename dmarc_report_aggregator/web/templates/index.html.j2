@@ -1,0 +1,85 @@
+{% extends "base.html.j2" %}
+
+{%- block title -%} Overview &ndash; {{ super() }} {%- endblock -%}
+
+{% block content %}
+    <div class="card mt-2">
+        <div class="card-body">
+            <h2 class="card-title">Reports</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col">Organization</th>
+                        <th scope="col">Domain</th>
+                        <th scope="col">DKIM Alignment</th>
+                        <th scope="col">DKIM Results</th>
+                        <th scope="col">SPF Alignment</th>
+                        <th scope="col">SPF Results</th>
+                        <th scope="col">Report ID</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for report, summary in zip(reports, summaries) %}
+                        <tr class="align-middle">
+                            <td class="fs-5">{{ report.org_name }}</td>
+                            <td>
+                                <span class="fs-5">{{ report.policy.domain }}</span>
+                                <br>
+                                <small><code>{{ format_policy(report.policy) }}</code></small>
+                            </td>
+                            <td>
+                                <table class="table mb-0">
+                                    {% for result, count in summary.dkim_alignments.items() %}
+                                        <tr class="table-{{ passfail_color(result) }}">
+                                            <td>{{ count }}x</td>
+                                            <td>{{ result }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table mb-0">
+                                    {% for result, count in summary.dkim_results.items() %}
+                                        <tr class="table-{{ passfail_color(result) }}">
+                                            <td>{{ count }}x</td>
+                                            <td>{{ result }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table mb-0">
+                                    {% for result, count in summary.spf_alignments.items() %}
+                                        <tr class="table-{{ passfail_color(result) }}">
+                                            <td>{{ count }}x</td>
+                                            <td>{{ result }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table mb-0">
+                                    {% for result, count in summary.spf_results.items() %}
+                                        <tr class="table-{{ passfail_color(result) }}">
+                                            <td>{{ count }}x</td>
+                                            <td>{{ result }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </td>
+                            <td><small>{{ report.id }}</small></td>
+                            <td class="text-end">
+                                <a href="/{{ report.org_name }}/{{ report.id }}">
+                                    Details <i class="bi-search"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

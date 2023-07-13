@@ -1,0 +1,196 @@
+{% extends "base.html.j2" %}
+
+{%- block title -%} Report from {{ report.org_name }} &ndash; {{ super() }} {%- endblock -%}
+
+{% block content %}
+    <div class="row g-2">
+        <div class="col-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">Receiver</h3>
+                    <div class="container gx-0">
+                        <div class="row">
+                            <div class="col gy-2">
+                                <strong>Receiver Domain:</strong>
+                                <br>
+                                <h4>{{ report.org_name }}</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col gy-2">
+                                <strong>Report ID:</strong>
+                                <br>
+                                {{ report.id }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col gy-2">
+                                <strong>Email:</strong>
+                                <br>
+                                {{ report.email | urlize }}
+                            </div>
+                        </div>
+                        {% if report.extra_contact_info %}
+                            <div class="row">
+                                <div class="col gy-2">
+                                    <strong>Extra Contact Information:</strong>
+                                    <br>
+                                    {{ report.extra_contact_info | urlize(target="_blank") }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title">Policy</h3>
+                    <div class="container gx-0">
+                        <div class="row">
+                            <div class="col gy-2">
+                                <strong>Policy Domain:</strong>
+                                <br>
+                                <h4>{{ report.policy.domain }}</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col gy-2 text-center">
+                                <code>{{ format_policy(report.policy) }}</code>
+                            </div>
+                        </div>
+                        <div class="row gx-0">
+                            <div class="col gy-2">
+                                <strong>DKIM Alignment:</strong>
+                                <br>
+                                {{ alignment_name(report.policy.adkim) }}
+                            </div>
+                            <div class="col gy-2">
+                                <strong>SPF Alignment:</strong>
+                                <br>
+                                {{ alignment_name(report.policy.aspf) }}
+                            </div>
+                        </div>
+                        <div class="row gx-0">
+                            <div class="col gy-2">
+                                <strong>Disposition:</strong>
+                                <br>
+                                {{ report.policy.p | capitalize }}
+                            </div>
+                            <div class="col gy-2">
+                                <strong>Subdomain Disposition:</strong>
+                                <br>
+                                {{ report.policy.sp | capitalize }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col gy-2">
+                                <strong>Percentage:</strong>
+                                <br>
+                                {{ report.policy.pct }} %
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="container gx-0">
+                        <div class="row">
+                            <div class="col gy-2">
+                                <strong>Start time:</strong>
+                                <br>
+                                {{ report.start }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col gy-2">
+                                <strong>End time:</strong>
+                                <br>
+                                {{ report.end }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-2">
+        <div class="card-body">
+            <h2 class="card-title">Records</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">
+                            <code>From:</code>
+                            Header
+                        </th>
+                        <th scope="col">Source IP</th>
+                        <th scope="col">Count</th>
+                        <th scope="col">DKIM Results</th>
+                        <th scope="col">SPF Results</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for record in report.records %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ record.from_header }}</td>
+                            <td>{{ record.source_ip }}</td>
+                            <td class="pe-4">{{ record.count }}</td>
+                            <td>
+                                <table class="table mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Domain</th>
+                                        <th scope="col">Selector</th>
+                                        <th scope="col">Result</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for dkim_result in record.dkim_results %}
+                                        <tr class="table-{{ passfail_color(dkim_result.result) }}">
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ dkim_result.domain }}</td>
+                                            <td>{{ dkim_result.selector }}</td>
+                                            <td>{{ dkim_result.result }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Domain</th>
+                                        <th scope="col">Result</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for spf_result in record.spf_results %}
+                                        <tr class="table-{{ passfail_color(spf_result.result) }}">
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ spf_result.domain }}</td>
+                                            <td>{{ spf_result.result }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
