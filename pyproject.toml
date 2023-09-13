@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dmarc-report-aggregator"
-version = "1.0.0"
+version = "1.1.0"
 description = "Receives DMARC reports via SMTP(S) and visualizes them via HTTP."
 authors = ["Maximilian Haye <maxh@freitagsrunde.org>"]
 packages = [{ include = "dmarc_report_aggregator" }]

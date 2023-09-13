@@ -17,7 +17,7 @@ def _validate_bool(value: object) -> bool:
 
 
 class SmtpSettings(BaseModel):
-    host: str
+    host: str = "0.0.0.0"
     port: int = 8025
     validate_dkim: bool = True
 
@@ -36,7 +36,7 @@ class LdapDisabled(BaseModel):
 
 
 class HttpSettings(BaseModel):
-    host: str
+    host: str = "0.0.0.0"
     port: int = 8080
 
     ldap: LdapSettings | LdapDisabled = LdapDisabled()
@@ -48,5 +48,5 @@ class Settings(BaseSettings):
     loglevel: str = "INFO"
     db_uri: str
 
-    smtp: SmtpSettings
-    http: HttpSettings
+    smtp: SmtpSettings = SmtpSettings()
+    http: HttpSettings = HttpSettings()
