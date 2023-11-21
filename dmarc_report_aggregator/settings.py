@@ -19,7 +19,7 @@ def _validate_bool(value: object) -> bool:
 class SmtpSettings(BaseModel):
     host: str = "0.0.0.0"
     port: int = 8025
-    validate_dkim: bool = True
+    validate_dkim: Annotated[bool, BeforeValidator(_validate_bool)] = True
 
 
 class LdapSettings(BaseModel):
