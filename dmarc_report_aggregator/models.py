@@ -5,13 +5,17 @@ from pydantic import BaseModel, AwareDatetime, conint, IPvAnyAddress, PositiveIn
 
 class DkimResult(BaseModel):
     domain: str
-    result: Literal["none", "pass", "fail", "policy", "neutral", "temperror", "permerror"]
+    result: Literal[
+        "none", "pass", "fail", "policy", "neutral", "temperror", "permerror"
+    ]
     selector: str | None
 
 
 class SpfResult(BaseModel):
     domain: str
-    result: Literal["none", "pass", "fail", "softfail", "neutral", "temperror", "permerror"]
+    result: Literal[
+        "none", "pass", "fail", "softfail", "neutral", "temperror", "permerror"
+    ]
 
 
 class DmarcPolicy(BaseModel):

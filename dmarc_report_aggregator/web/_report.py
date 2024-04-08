@@ -10,7 +10,9 @@ from dmarc_report_aggregator.storage import DmarcReportStorage
 async def report_handler(request: web.Request) -> dict:
     start_time = time.time()
     storage: DmarcReportStorage = request.app["storage"]
-    report = await storage.get_one(request.match_info["org_name"], request.match_info["report_id"])
+    report = await storage.get_one(
+        request.match_info["org_name"], request.match_info["report_id"]
+    )
 
     return {
         "report": report,

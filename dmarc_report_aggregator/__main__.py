@@ -25,7 +25,7 @@ async def main(settings: Settings) -> None:
         tg.create_task(web_app.run(), name="HTTP server")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     settings = Settings()
 
     logging.basicConfig(level=settings.loglevel)

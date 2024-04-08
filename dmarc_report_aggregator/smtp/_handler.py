@@ -20,26 +20,38 @@ class ReportExtractionError(Exception):
     pass
 
 
-def _extract_report_from_zip(payload: bytes, report_basename: str, message_id: str, *,
-                             max_size: int = 1024 * 1024) -> bytes:
+def _extract_report_from_zip(
+    payload: bytes,
+    report_basename: str,
+    message_id: str,
+    *,
+    max_size: int = 1024 * 1024,
+) -> bytes:
     with ZipFile(BytesIO(payload)) as zip_file:
         expected_name = f"{report_basename}.xml"
         try:
             report_fileinfo = zip_file.getinfo(expected_name)
         except KeyError:
-            raise ReportExtractionError(f"{message_id}: Report ZIP doesn't contain a file named '{expected_name}'")
+            raise ReportExtractionError(
+                f"{message_id}: Report ZIP doesn't contain a file named '{expected_name}'"
+            )
 
         if report_fileinfo.file_size > 1024 * 1024:  # 1MiB
             raise ReportExtractionError(
-                f"{message_id}: Zipped report '%s' is too large uncompressed: {report_fileinfo.file_size} > {max_size}")
+                f"{message_id}: Zipped report '%s' is too large uncompressed: {report_fileinfo.file_size} > {max_size}"
+            )
 
         return zip_file.read(report_fileinfo)
 
 
-def _require_content_type(part: Message, message_id: str, expected_type: str, *more_types: str) -> None:
+def _require_content_type(
+    part: Message, message_id: str, expected_type: str, *more_types: str
+) -> None:
     if part.get_content_type() not in (expected_type, *more_types):
-        raise ReportExtractionError(f"{message_id}: Report content type does not match file extension, "
-                                    f"expected one of {(expected_type, *more_types)}.")
+        raise ReportExtractionError(
+            f"{message_id}: Report content type does not match file extension, "
+            f"expected one of {(expected_type, *more_types)}."
+        )
 
 
 _ATTACHMENT_NAME_PATTERN = re.compile(
@@ -50,7 +62,8 @@ _ATTACHMENT_NAME_PATTERN = re.compile(
     !(?P<end>\d+)
     (?:!(?P<id>\d+))?
     (?P<ext>(?:\.\w+)+)$
-    """, re.X
+    """,
+    re.X,
 )
 
 
@@ -69,15 +82,21 @@ def report_from_message(message: Message, message_id: str) -> DmarcReport | None
 
         match match["ext"]:
             case ".xml":  # No compression.
-                _require_content_type(part, message_id, "application/xml", "text/xml", "text/plain")
+                _require_content_type(
+                    part, message_id, "application/xml", "text/xml", "text/plain"
+                )
             case ".xml.zip" | ".zip":  # ZIP compression.
                 _require_content_type(part, message_id, "application/zip")
-                payload = _extract_report_from_zip(payload, name.removesuffix(match["ext"]), message_id)
+                payload = _extract_report_from_zip(
+                    payload, name.removesuffix(match["ext"]), message_id
+                )
             case ".xml.gz":  # GZIP compression.
                 _require_content_type(part, message_id, "application/gzip")
                 payload = gzip.decompress(payload)
             case other:
-                raise ReportExtractionError(f"'{message_id}': Unrecognized file extension '{other}'")
+                raise ReportExtractionError(
+                    f"'{message_id}': Unrecognized file extension '{other}'"
+                )
 
         return parse_report(payload)
 
@@ -98,7 +117,9 @@ class DmarcSavingHandler(AsyncMessage):
         # dkim_result = await dkim.verify_async(message.as_bytes(), logger=_dkim_log)
         dkim_result = True
         if not dkim_result:
-            _log.info("'%s': Disregarding message due to failed DKIM verification", message_id)
+            _log.info(
+                "'%s': Disregarding message due to failed DKIM verification", message_id
+            )
             return
 
         report = report_from_message(message, message_id)

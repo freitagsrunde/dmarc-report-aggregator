@@ -12,6 +12,7 @@ _log = logging.getLogger(__name__)
 
 def _collect_migrations() -> list[Traversable]:
     from . import migrations as migrations_pkg
+
     migrations: list[Traversable] = []
     for traversable in resources.files(migrations_pkg).iterdir():
         if traversable.is_file() and traversable.name.endswith(".sql"):
@@ -46,6 +47,8 @@ async def migrate_db(db: aiosqlite.Connection) -> None:
             sql += migration.read_text()
             await cursor.executescript(sql)
 
-            await cursor.execute("INSERT INTO migrations VALUES (?, ?)",
-                                 (basename, datetime.now(UTC)))
+            await cursor.execute(
+                "INSERT INTO migrations VALUES (?, ?)",
+                (basename, datetime.now(UTC))
+            )
             await cursor.execute("COMMIT")

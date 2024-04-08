@@ -46,21 +46,28 @@ def _sync_send_message(host: str, port: int, message: Message) -> None:
         smtp.send_message(message)
 
 
-@pytest.mark.parametrize("filename,expected_org_name", (
+@pytest.mark.parametrize(
+    "filename,expected_org_name",
+    (
         ("aol.eml", "Yahoo"),
         ("fastmail.eml", "Fastmail Pty Ltd"),
         ("google.eml", "google.com"),
         ("mailru.eml", "Mail.Ru"),
         ("outlook.eml", "Outlook.com"),
         ("outlook-enterprise.eml", "Enterprise Outlook"),
-        ("yahoo.eml", "Yahoo")
-))
+        ("yahoo.eml", "Yahoo"),
+    ),
+)
 async def test_real_reports(
-        filename: str, expected_org_name: str,
-        storage: DmarcReportStorage, server: DmarcSmtpServer
+    filename: str,
+    expected_org_name: str,
+    storage: DmarcReportStorage,
+    server: DmarcSmtpServer,
 ) -> None:
-    with (mock.patch("dkim.verify_async", new=AsyncMock(return_value=True)),
-          resources.files(real_reports).joinpath(filename).open("rb") as file):
+    with (
+        mock.patch("dkim.verify_async", new=AsyncMock(return_value=True)),
+        resources.files(real_reports).joinpath(filename).open("rb") as file,
+    ):
         message = email.message_from_binary_file(file)
         await to_thread(lambda: _sync_send_message("localhost", server.port, message))
 

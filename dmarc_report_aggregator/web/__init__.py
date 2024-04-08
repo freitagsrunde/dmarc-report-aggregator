@@ -23,17 +23,20 @@ class DmarcWebApp:
         self._app = web.Application()
         self._app["storage"] = storage
 
-        self._app.add_routes([
-            web.get("/", index_handler),
-            web.get("/{org_name}/{report_id}", report_handler)
-        ])
+        self._app.add_routes(
+            [
+                web.get("/", index_handler),
+                web.get("/{org_name}/{report_id}", report_handler),
+            ]
+        )
 
-        jinja_env = aiohttp_jinja2.setup(self._app,
-                                         context_processors=(aiohttp_jinja2.request_processor,),
-                                         loader=jinja2.PackageLoader(__package__))
+        jinja_env = aiohttp_jinja2.setup(
+            self._app,
+            context_processors=(aiohttp_jinja2.request_processor,),
+            loader=jinja2.PackageLoader(__package__),
+        )
         jinja_env.globals.update(
-            zip=zip,
-            app_version=dmarc_report_aggregator.__version__
+            zip=zip, app_version=dmarc_report_aggregator.__version__
         )
 
         if settings.ldap.enabled:

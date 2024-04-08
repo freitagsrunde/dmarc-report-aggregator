@@ -20,18 +20,28 @@ def _ldap_auth(settings: LdapSettings, username: str, password: str) -> str | No
     user_dn = settings.user_dn.format(username=username)
     user_filter = settings.user_filter.format(username=username)
 
-    connection = ldap3.Connection(settings.url, user_dn, password, authentication=ldap3.SIMPLE,
-                                  read_only=True, raise_exceptions=True)
+    connection = ldap3.Connection(
+        settings.url,
+        user_dn,
+        password,
+        authentication=ldap3.SIMPLE,
+        read_only=True,
+        raise_exceptions=True,
+    )
     try:
         connection.bind()
     except LDAPException:
         _log.info("Failed LDAP authentication: Bind failed: '%s'", user_dn)
         return None
 
-    connection.search(user_dn, user_filter, search_scope=ldap3.BASE, attributes=ldap3.ALL_ATTRIBUTES)
+    connection.search(
+        user_dn, user_filter, search_scope=ldap3.BASE, attributes=ldap3.ALL_ATTRIBUTES
+    )
 
     if not connection.entries:
-        _log.warning("Failed LDAP authentication: Entry not found after bind: '%s'", user_dn)
+        _log.warning(
+            "Failed LDAP authentication: Entry not found after bind: '%s'", user_dn
+        )
         return None
 
     _log.info("Successfully authenticated user '%s' via LDAP", user_dn)
@@ -41,7 +51,9 @@ def _ldap_auth(settings: LdapSettings, username: str, password: str) -> str | No
 def setup_auth(app: web.Application, settings: LdapSettings) -> None:
     _log.info("Enabling LDAP authentication.")
     secret = settings.cookie_secret or secrets.token_bytes(32)
-    app.middlewares.append(session_middleware(EncryptedCookieStorage(secret, max_age=3600)))
+    app.middlewares.append(
+        session_middleware(EncryptedCookieStorage(secret, max_age=3600))
+    )
 
     routes = web.RouteTableDef()
 
@@ -64,14 +76,20 @@ def setup_auth(app: web.Application, settings: LdapSettings) -> None:
         password = form_data.get("password", None)
         if not username or not password:
             _log.debug("Login without username and/or password.")
-            return render_template("login.html.j2", request, {"failure": True}, status=400)
+            return render_template(
+                "login.html.j2", request, {"failure": True}, status=400
+            )
         if not username.isidentifier():
             _log.debug("Login with invalid username.")
-            return render_template("login.html.j2", request, {"failure": True}, status=400)
+            return render_template(
+                "login.html.j2", request, {"failure": True}, status=400
+            )
 
         user_dn = await to_thread(lambda: _ldap_auth(settings, username, password))
         if not user_dn:
-            return render_template("login.html.j2", request, {"failure": True}, status=403)
+            return render_template(
+                "login.html.j2", request, {"failure": True}, status=403
+            )
 
         session = await new_session(request)
         session["user_dn"] = user_dn

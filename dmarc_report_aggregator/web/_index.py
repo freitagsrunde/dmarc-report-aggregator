@@ -23,7 +23,9 @@ def _summarize(report: DmarcReport) -> _ReportSummary:
     spf_results: dict[str, int] = {}
     for record in report.records:
         for dkim_result in record.dkim_results:
-            dkim_results[dkim_result.result] = dkim_results.get(dkim_result.result, 0) + 1
+            dkim_results[dkim_result.result] = (
+                dkim_results.get(dkim_result.result, 0) + 1
+            )
         for spf_result in record.spf_results:
             spf_results[spf_result.result] = spf_results.get(spf_result.result, 0) + 1
 

@@ -22,8 +22,9 @@ class DmarcSmtpServer:
 
     async def run(self) -> None:
         loop = get_running_loop()
-        self._server = await loop.create_server(lambda: SMTP(DmarcSavingHandler(self._storage)),
-                                                self.host, self.port)
+        self._server = await loop.create_server(
+            lambda: SMTP(DmarcSavingHandler(self._storage)), self.host, self.port
+        )
 
         try:
             # Update port in case 0 was used to select an unused port.

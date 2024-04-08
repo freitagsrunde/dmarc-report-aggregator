@@ -43,15 +43,19 @@ class DmarcReportStorage:
     async def get_all(self) -> list[DmarcReport]:
         reports = []
         async with self._connect() as db:
-            async for row in await db.execute("SELECT * FROM dmarc_report ORDER BY begin_timestamp DESC"):
+            async for row in await db.execute(
+                "SELECT * FROM dmarc_report ORDER BY begin_timestamp DESC"
+            ):
                 reports.append(await _load_report(db, row))
 
         return reports
 
     async def get_one(self, org_name: str, report_id: str) -> DmarcReport:
         async with self._connect() as db:
-            async with db.execute("SELECT * FROM dmarc_report WHERE org_name = ? AND report_id = ?",
-                                  (org_name, report_id)) as cursor:
+            async with db.execute(
+                "SELECT * FROM dmarc_report WHERE org_name = ? AND report_id = ?",
+                (org_name, report_id),
+            ) as cursor:
                 cursor: aiosqlite.Cursor
                 row = await cursor.fetchone()
                 if not row:
