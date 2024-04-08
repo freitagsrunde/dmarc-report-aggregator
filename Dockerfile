@@ -1,4 +1,4 @@
-FROM python:3.11.5-alpine
+FROM python:3.11.9-alpine
 
 ADD / /dmarc-report-aggregator
 RUN pip install /dmarc-report-aggregator && rm -rf /dmarc-report-aggregator
