@@ -1,8 +1,8 @@
 #!/bin/bash
 set -o nounset -o errexit
 
-readonly VERSION="1.2.3"
 readonly IMAGE_REPO="ghcr.io/freitagsrunde/dmarc-report-aggregator"
+VERSION="$(python -c 'print(__import__("dmarc_report_aggregator").__version__)')"
 
 PUSH=false
 while getopts ":p" OPT; do
