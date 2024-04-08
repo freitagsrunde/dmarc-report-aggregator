@@ -1,8 +1,8 @@
 import bisect
 import logging
-from datetime import datetime
+from datetime import datetime, UTC
 from importlib import resources
-from importlib.abc import Traversable
+from importlib.resources.abc import Traversable
 from operator import attrgetter
 
 import aiosqlite
@@ -47,5 +47,5 @@ async def migrate_db(db: aiosqlite.Connection) -> None:
             await cursor.executescript(sql)
 
             await cursor.execute("INSERT INTO migrations VALUES (?, ?)",
-                                 (basename, datetime.utcnow()))
+                                 (basename, datetime.now(UTC)))
             await cursor.execute("COMMIT")

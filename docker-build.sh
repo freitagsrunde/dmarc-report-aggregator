@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o nounset -o errexit
 
-readonly VERSION="1.2.1"
+readonly VERSION="1.2.2"
 readonly IMAGE_REPO="ghcr.io/freitagsrunde/dmarc-report-aggregator"
 
 PUSH=false

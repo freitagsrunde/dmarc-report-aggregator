@@ -13,7 +13,7 @@ class XmlDmarcReportError(ValueError):
 
 def _find_required(etree: ElementTree | Element, path: str) -> Element:
     result = etree.find(path)
-    if not result:
+    if result is None:
         raise XmlDmarcReportError(f"Missing required element '{path}'")
     return result
 

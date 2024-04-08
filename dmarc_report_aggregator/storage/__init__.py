@@ -1,5 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
+from datetime import datetime
 from typing import Generator
 
 import aiosqlite
@@ -10,6 +11,14 @@ from dmarc_report_aggregator.storage._migration import migrate_db
 from dmarc_report_aggregator.storage._store import store_report
 
 _log = logging.getLogger(__name__)
+
+
+def _adapt_datetime_iso(dt: datetime):
+    """Adapt datetime.datetime to timezone-naive ISO 8601 date."""
+    return dt.isoformat(sep=" ")
+
+
+aiosqlite.register_adapter(datetime, _adapt_datetime_iso)
 
 
 class DmarcReportStorage:
