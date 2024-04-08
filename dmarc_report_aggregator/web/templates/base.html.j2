@@ -58,6 +58,9 @@
         {% block content %}{% endblock %}
     </main>
     <footer>
+        <small class="fw-light">
+            On version {{ app_version }}.
+        </small>
         {% if request_ms %}
             <small class="fw-light">
                 Processing took {{ request_ms }}ms.

@@ -1,10 +1,10 @@
-import asyncio
 import logging
 
 import aiohttp_jinja2
 import jinja2
 from aiohttp import web
 
+import dmarc_report_aggregator
 from dmarc_report_aggregator.settings import HttpSettings
 from dmarc_report_aggregator.storage import DmarcReportStorage
 from dmarc_report_aggregator.web._auth import setup_auth
@@ -31,7 +31,10 @@ class DmarcWebApp:
         jinja_env = aiohttp_jinja2.setup(self._app,
                                          context_processors=(aiohttp_jinja2.request_processor,),
                                          loader=jinja2.PackageLoader(__package__))
-        jinja_env.globals["zip"] = zip
+        jinja_env.globals.update(
+            zip=zip,
+            app_version=dmarc_report_aggregator.__version__
+        )
 
         if settings.ldap.enabled:
             setup_auth(self._app, settings.ldap)
